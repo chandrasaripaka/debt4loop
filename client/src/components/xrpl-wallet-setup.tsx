@@ -33,7 +33,7 @@ export default function XRPLWalletSetup() {
 
   const { data: balance, isLoading: balanceLoading } = useQuery({
     queryKey: ["/api/xrpl/wallet/balance"],
-    enabled: !!company?.xrplAddress,
+    enabled: !!(company as any)?.xrplAddress,
     refetchInterval: 10000, // Refresh every 10 seconds
   });
 
@@ -43,7 +43,7 @@ export default function XRPLWalletSetup() {
 
   const { data: transactions = [] } = useQuery({
     queryKey: ["/api/xrpl/transactions"],
-    enabled: !!company?.xrplAddress,
+    enabled: !!(company as any)?.xrplAddress,
     refetchInterval: 15000, // Refresh every 15 seconds
   });
 
