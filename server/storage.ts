@@ -70,6 +70,8 @@ export class MemStorage implements IStorage {
       name: "Acme Corp",
       anonymousId: "ANX-2847",
       debtBalance: 2500,
+      xrplAddress: null,
+      xrplSeed: null,
       createdAt: new Date(),
     };
     this.companies.set(mainCompany.id, mainCompany);
@@ -88,6 +90,8 @@ export class MemStorage implements IStorage {
         name: comp.name,
         anonymousId: comp.anonymousId,
         debtBalance: Math.floor(Math.random() * 5000) + 1000,
+        xrplAddress: null,
+        xrplSeed: null,
         createdAt: new Date(),
       };
       this.companies.set(company.id, company);
@@ -150,6 +154,8 @@ export class MemStorage implements IStorage {
       ...insertPosition,
       id,
       companyId,
+      currency: insertPosition.currency || "USD",
+      description: insertPosition.description || null,
       isSettled: false,
       createdAt: new Date(),
     };

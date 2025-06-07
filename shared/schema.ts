@@ -7,6 +7,8 @@ export const companies = pgTable("companies", {
   name: text("name").notNull(),
   anonymousId: text("anonymous_id").notNull().unique(),
   debtBalance: integer("debt_balance").notNull().default(2500),
+  xrplAddress: text("xrpl_address"),
+  xrplSeed: text("xrpl_seed"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -20,6 +22,7 @@ export const positions = pgTable("positions", {
   dueDate: timestamp("due_date").notNull(),
   description: text("description"),
   isSettled: boolean("is_settled").notNull().default(false),
+  xrplTxHash: text("xrpl_tx_hash"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
