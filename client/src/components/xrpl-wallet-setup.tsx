@@ -85,7 +85,7 @@ export default function XRPLWalletSetup() {
     }
   };
 
-  const hasWallet = company?.xrplAddress;
+  const hasWallet = (company as any)?.xrplAddress;
 
   if (!hasWallet) {
     return (
@@ -163,21 +163,21 @@ export default function XRPLWalletSetup() {
             <Label className="text-sm font-medium text-gray-700">Wallet Address</Label>
             <div className="flex items-center space-x-2 mt-1">
               <Input 
-                value={company.xrplAddress} 
+                value={(company as any)?.xrplAddress || ''} 
                 readOnly 
                 className="font-mono text-sm"
               />
               <Button 
                 variant="outline" 
                 size="icon"
-                onClick={() => copyToClipboard(company.xrplAddress)}
+                onClick={() => copyToClipboard((company as any)?.xrplAddress || '')}
               >
                 <Copy className="w-4 h-4" />
               </Button>
               <Button 
                 variant="outline" 
                 size="icon"
-                onClick={() => window.open(`https://testnet.xrpl.org/accounts/${company.xrplAddress}`, '_blank')}
+                onClick={() => window.open(`https://testnet.xrpl.org/accounts/${(company as any)?.xrplAddress}`, '_blank')}
               >
                 <ExternalLink className="w-4 h-4" />
               </Button>
@@ -192,7 +192,7 @@ export default function XRPLWalletSetup() {
               </div>
               <div>
                 <span className="text-gray-500">Network Fee:</span>
-                <span className="ml-2 font-medium">{networkInfo.fee} XRP</span>
+                <span className="ml-2 font-medium">{(networkInfo as any)?.fee || '0.00001'} XRP</span>
               </div>
             </div>
           )}
@@ -213,11 +213,11 @@ export default function XRPLWalletSetup() {
           ) : balance ? (
             <div className="grid grid-cols-2 gap-6">
               <div className="text-center p-4 bg-light-gray rounded-lg">
-                <div className="text-2xl font-bold text-dark-gray">{parseFloat(balance.xrp).toFixed(6)}</div>
+                <div className="text-2xl font-bold text-dark-gray">{parseFloat((balance as any)?.xrp || '0').toFixed(6)}</div>
                 <div className="text-sm text-gray-500">XRP</div>
               </div>
               <div className="text-center p-4 bg-accent bg-opacity-10 rounded-lg">
-                <div className="text-2xl font-bold text-accent">{parseFloat(balance.debtTokens || '0').toFixed(0)}</div>
+                <div className="text-2xl font-bold text-accent">{parseFloat((balance as any)?.debtTokens || '0').toFixed(0)}</div>
                 <div className="text-sm text-gray-500">DEBT Tokens</div>
               </div>
             </div>
@@ -298,7 +298,7 @@ export default function XRPLWalletSetup() {
           <CardTitle>Recent Transactions</CardTitle>
         </CardHeader>
         <CardContent>
-          {transactions.length === 0 ? (
+          {(transactions as any[]).length === 0 ? (
             <div className="text-center py-6 text-gray-500">
               <QrCode className="w-12 h-12 mx-auto mb-3 text-gray-300" />
               <p>No transactions yet</p>
@@ -306,7 +306,7 @@ export default function XRPLWalletSetup() {
             </div>
           ) : (
             <div className="space-y-3">
-              {transactions.slice(0, 5).map((tx: any, index: number) => (
+              {(transactions as any[]).slice(0, 5).map((tx: any, index: number) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-light-gray rounded-lg">
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
