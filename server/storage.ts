@@ -19,6 +19,7 @@ export interface IStorage {
   createCompany(company: InsertCompany): Promise<Company>;
   getAllCompanies(): Promise<Company[]>;
   updateCompanyDebtBalance(id: number, balance: number): Promise<Company | undefined>;
+  updateCompanyXRPLWallet(id: number, address: string, seed: string): Promise<Company | undefined>;
 
   // Position methods
   getPosition(id: number): Promise<Position | undefined>;
@@ -26,6 +27,7 @@ export interface IStorage {
   getAllPositions(): Promise<Position[]>;
   createPosition(companyId: number, position: InsertPosition): Promise<Position>;
   updatePositionSettled(id: number, isSettled: boolean): Promise<Position | undefined>;
+  updatePositionXRPLHash(id: number, txHash: string): Promise<Position | undefined>;
 
   // Loop methods
   getLoop(loopId: string): Promise<Loop | undefined>;
@@ -114,6 +116,8 @@ export class MemStorage implements IStorage {
       ...insertCompany,
       id,
       debtBalance: 2500,
+      xrplAddress: null,
+      xrplSeed: null,
       createdAt: new Date(),
     };
     this.companies.set(id, company);
@@ -128,6 +132,17 @@ export class MemStorage implements IStorage {
     const company = this.companies.get(id);
     if (company) {
       company.debtBalance = balance;
+      this.companies.set(id, company);
+      return company;
+    }
+    return undefined;
+  }
+
+  async updateCompanyXRPLWallet(id: number, address: string, seed: string): Promise<Company | undefined> {
+    const company = this.companies.get(id);
+    if (company) {
+      company.xrplAddress = address;
+      company.xrplSeed = seed;
       this.companies.set(id, company);
       return company;
     }
@@ -157,6 +172,7 @@ export class MemStorage implements IStorage {
       currency: insertPosition.currency || "USD",
       description: insertPosition.description || null,
       isSettled: false,
+      xrplTxHash: null,
       createdAt: new Date(),
     };
     this.positions.set(id, position);
@@ -167,6 +183,16 @@ export class MemStorage implements IStorage {
     const position = this.positions.get(id);
     if (position) {
       position.isSettled = isSettled;
+      this.positions.set(id, position);
+      return position;
+    }
+    return undefined;
+  }
+
+  async updatePositionXRPLHash(id: number, txHash: string): Promise<Position | undefined> {
+    const position = this.positions.get(id);
+    if (position) {
+      position.xrplTxHash = txHash;
       this.positions.set(id, position);
       return position;
     }
