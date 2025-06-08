@@ -271,4 +271,153 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+
+// DatabaseStorage implementation
+export class DatabaseStorage implements IStorage {
+  // Company methods
+  async getCompany(id: number): Promise<Company | undefined> {
+    const [company] = await db.select().from(companies).where(eq(companies.id, id));
+    return company || undefined;
+  }
+
+  async getCompanyByAnonymousId(anonymousId: string): Promise<Company | undefined> {
+    const [company] = await db.select().from(companies).where(eq(companies.anonymousId, anonymousId));
+    return company || undefined;
+  }
+
+  async createCompany(insertCompany: InsertCompany): Promise<Company> {
+    const [company] = await db
+      .insert(companies)
+      .values(insertCompany)
+      .returning();
+    return company;
+  }
+
+  async getAllCompanies(): Promise<Company[]> {
+    return await db.select().from(companies);
+  }
+
+  async updateCompanyDebtBalance(id: number, balance: number): Promise<Company | undefined> {
+    const [company] = await db
+      .update(companies)
+      .set({ debtBalance: balance })
+      .where(eq(companies.id, id))
+      .returning();
+    return company || undefined;
+  }
+
+  async updateCompanyXRPLWallet(id: number, address: string, seed: string): Promise<Company | undefined> {
+    const [company] = await db
+      .update(companies)
+      .set({ xrplAddress: address, xrplSeed: seed })
+      .where(eq(companies.id, id))
+      .returning();
+    return company || undefined;
+  }
+
+  // Position methods
+  async getPosition(id: number): Promise<Position | undefined> {
+    const [position] = await db.select().from(positions).where(eq(positions.id, id));
+    return position || undefined;
+  }
+
+  async getPositionsByCompany(companyId: number): Promise<Position[]> {
+    return await db.select().from(positions).where(eq(positions.companyId, companyId));
+  }
+
+  async getAllPositions(): Promise<Position[]> {
+    return await db.select().from(positions);
+  }
+
+  async createPosition(companyId: number, insertPosition: InsertPosition): Promise<Position> {
+    const [position] = await db
+      .insert(positions)
+      .values({ ...insertPosition, companyId })
+      .returning();
+    return position;
+  }
+
+  async updatePositionSettled(id: number, isSettled: boolean): Promise<Position | undefined> {
+    const [position] = await db
+      .update(positions)
+      .set({ isSettled })
+      .where(eq(positions.id, id))
+      .returning();
+    return position || undefined;
+  }
+
+  async updatePositionXRPLHash(id: number, txHash: string): Promise<Position | undefined> {
+    const [position] = await db
+      .update(positions)
+      .set({ xrplTxHash: txHash })
+      .where(eq(positions.id, id))
+      .returning();
+    return position || undefined;
+  }
+
+  // Loop methods
+  async getLoop(loopId: string): Promise<Loop | undefined> {
+    const [loop] = await db.select().from(loops).where(eq(loops.loopId, loopId));
+    return loop || undefined;
+  }
+
+  async getAllLoops(): Promise<Loop[]> {
+    return await db.select().from(loops);
+  }
+
+  async getLoopsByStatus(status: string): Promise<Loop[]> {
+    return await db.select().from(loops).where(eq(loops.status, status));
+  }
+
+  async createLoop(insertLoop: InsertLoop): Promise<Loop> {
+    const [loop] = await db
+      .insert(loops)
+      .values(insertLoop)
+      .returning();
+    return loop;
+  }
+
+  async updateLoopStatus(loopId: string, status: string): Promise<Loop | undefined> {
+    const [loop] = await db
+      .update(loops)
+      .set({ status })
+      .where(eq(loops.loopId, loopId))
+      .returning();
+    return loop || undefined;
+  }
+
+  // Loop participant methods
+  async getLoopParticipants(loopId: string): Promise<LoopParticipant[]> {
+    return await db.select().from(loopParticipants).where(eq(loopParticipants.loopId, loopId));
+  }
+
+  async createLoopParticipant(participant: Omit<LoopParticipant, 'id'>): Promise<LoopParticipant> {
+    const [loopParticipant] = await db
+      .insert(loopParticipants)
+      .values(participant)
+      .returning();
+    return loopParticipant;
+  }
+
+  async updateParticipantAcceptance(loopId: string, companyId: number, hasAccepted: boolean): Promise<LoopParticipant | undefined> {
+    const [participant] = await db
+      .update(loopParticipants)
+      .set({ hasAccepted })
+      .where(and(eq(loopParticipants.loopId, loopId), eq(loopParticipants.companyId, companyId)))
+      .returning();
+    return participant || undefined;
+  }
+
+  async updateParticipantVerification(loopId: string, companyId: number, hasVerified: boolean): Promise<LoopParticipant | undefined> {
+    const [participant] = await db
+      .update(loopParticipants)
+      .set({ hasVerified })
+      .where(and(eq(loopParticipants.loopId, loopId), eq(loopParticipants.companyId, companyId)))
+      .returning();
+    return participant || undefined;
+  }
+}
+
+export const storage = new DatabaseStorage();
