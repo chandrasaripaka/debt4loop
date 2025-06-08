@@ -125,6 +125,10 @@ export default function Wallet() {
             <XRPLWalletSetup />
           </TabsContent>
 
+          <TabsContent value="token" className="space-y-6">
+            <TokenManagement />
+          </TabsContent>
+
           <TabsContent value="debt" className="space-y-6">
             {/* Balance Overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
