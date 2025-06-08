@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertPositionSchema, insertLoopSchema } from "@shared/schema";
 import { registerXRPLRoutes } from "./xrpl-routes";
 import { registerTokenRoutes } from "./xrpl-token-routes";
+import { registerExplorerRoutes } from "./xrpl-explorer-routes";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -216,6 +217,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register token management routes
   registerTokenRoutes(app);
+  
+  // Register explorer routes
+  registerExplorerRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

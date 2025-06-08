@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/header";
 import XRPLWalletSetup from "@/components/xrpl-wallet-setup";
 import TokenManagement from "@/components/token-management";
+import TransactionExplorer from "@/components/transaction-explorer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -106,7 +107,7 @@ export default function Wallet() {
       
       <main className="flex-1 p-6 overflow-y-auto">
         <Tabs defaultValue="xrpl" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="xrpl" className="flex items-center space-x-2">
               <Zap className="w-4 h-4" />
               <span>XRPL Wallet</span>
@@ -114,6 +115,10 @@ export default function Wallet() {
             <TabsTrigger value="token" className="flex items-center space-x-2">
               <Coins className="w-4 h-4" />
               <span>Token Management</span>
+            </TabsTrigger>
+            <TabsTrigger value="explorer" className="flex items-center space-x-2">
+              <ArrowUpRight className="w-4 h-4" />
+              <span>Block Explorer</span>
             </TabsTrigger>
             <TabsTrigger value="debt" className="flex items-center space-x-2">
               <History className="w-4 h-4" />
@@ -127,6 +132,10 @@ export default function Wallet() {
 
           <TabsContent value="token" className="space-y-6">
             <TokenManagement />
+          </TabsContent>
+
+          <TabsContent value="explorer" className="space-y-6">
+            <TransactionExplorer />
           </TabsContent>
 
           <TabsContent value="debt" className="space-y-6">
