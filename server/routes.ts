@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertPositionSchema, insertLoopSchema } from "@shared/schema";
 import { registerXRPLRoutes } from "./xrpl-routes";
+import { registerTokenRoutes } from "./xrpl-token-routes";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -212,6 +213,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register XRPL routes
   registerXRPLRoutes(app);
+  
+  // Register token management routes
+  registerTokenRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;
